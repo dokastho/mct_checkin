@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Michigan Cycling Check In</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    </head>
+    <body>
+        <h1>Ride History</h1>
+        <p>
+        {% for ts, ppl in attendance %}
+        <h2>ts</h2>
+        {% for p in ppl %}
+        {{p.uniqname}}, 
+        {% endfor %}
+        {% endfor %}
+        </p>
+    </body>
+</html>

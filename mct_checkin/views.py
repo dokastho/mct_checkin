@@ -29,19 +29,33 @@ def show_index():
 def check_in():
     """view for submitting checkin form."""
     
-    # start the timer to submit if necessary
-    mct_checkin.attend_lock.acquire()
-    if len(mct_checkin.attendance) == 0:
-        t = Thread(target=mct_checkin.send_attendance, args=())
-        t.start()
-    mct_checkin.attend_lock.release()
-    
     logname = flask.request.form.get('logname')
     
     flask.session["logname"] = logname
-    mct_checkin.add_attend(logname)
+    mct_checkin.insert_attendance(logname)
     
     return flask.redirect("/")
+
+@mct_checkin.app.route("/attendance/")
+def show_attendance():
+    """Display attendance for past rides."""
+
+    attendance = mct_checkin.model.get_attendance_history()
+
+    context = {}
+
+    # sort by half hours
+    s: set()
+    for ts, uniqname in attendance.values():
+        # TODO: datetime data type
+        new_ts = mct_checkin.model.round_nearest(ts)
+
+        if new_ts not in context:
+            context[new_ts] = set()
+
+        context[new_ts].insert(uniqname)
+
+    flask.render_template("attendance.html", context)
     
     
 # @mct_checkin.app.route("/logout/", methods=["POST"])

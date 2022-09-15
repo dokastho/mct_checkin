@@ -3,7 +3,6 @@ from datetime import timedelta
 import time
 import flask
 import mct_checkin
-from mct_checkin.gmail import send_mail
 import sqlite3
 import pathlib
 
@@ -64,29 +63,45 @@ def check_attendance(logname):
     return logname in mct_checkin.attendance
 
 
-def send_attendance():
-    """wait half an hour and send attendance."""
+def insert_attendance(logname):
+    """commit attendance to db."""
 
-    # delay = 30 * 60
-    delay = 1
-    time.sleep(delay)
+    database = get_db()
+    cur = database.execute(
+        "INSERT INTO participants "
+        "(uniqname)"
+        "VALUES(?)",
+        (logname,)
+    )
+    cur.fetchone()["tagid"]
     
-    # send email
-    send_mail(mct_checkin.attendance)
-    print("clearing attendance...")
-    # clear attendance dict
-    # mct_checkin.attend_lock.acquire()
-    # mct_checkin.attendance = []
-    # mct_checkin.attend_lock.release()
-    print("attendance cleared.")
-    
+def get_attendance_history():
+    """fetch all distinct attendance history."""
+
+    database = get_db()
+    cur = database.execute(
+        "DISTINCT * "
+        "FROM participants",
+        ()
+    )
+    attendance = cur.fetchall()
+    return attendance
 
 
-def add_attend(logname: str):
-    """add someone to attendance"""
-    mct_checkin.attend_lock.acquire()
-    if logname in mct_checkin.attendance:
-        print(f'{logname} already in attendannce')
-    else:
-        mct_checkin.attendance.append(logname)
-    mct_checkin.attend_lock.release()
+import datetime
+
+def round_minutes(dt, direction, resolution):
+    new_minute = (dt.minute // resolution + (1 if direction == 'up' else 0)) * resolution
+
+    return dt + datetime.timedelta(minutes=new_minute - dt.minute), new_minute - dt.minute
+
+def round_nearest(dt: datetime.datetime, resolution=30):
+    min_delta = 1e6
+    new_time = None
+    for direction in 'up', 'down':
+        new_t, delta = round_minutes(dt, direction, resolution)
+        if delta < min_delta:
+            new_time = new_t
+            min_delta = delta
+
+    return new_time
