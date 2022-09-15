@@ -3,23 +3,32 @@
     <head>
         <title>Michigan Cycling Check In</title>
         <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+        <link rel="icon" type="image/x-icon" href="/static/img/Cycling.jpg">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <h1>Check in for the group ride</h1>
-        <h2>@umcycling.org</h2>
-        {% if attendance %}
-        <h2>Checked in</h2>
-        {% else %}
-        <form action="/submit/" method="post" enctype="multipart/form-data">
-            {% if logname == "" %}
-            <label for="logname">uniqname:</label><br>
-            <input type="text" id="logname" name="logname" required><br>
-            {% else %}
-            <label for="logout">Logged in as {{logname}}. Not {{logname}}?</label><br>
-            <a href="/logout/" id="logout" name="logout">Logout</a><br>
-            {% endif %}
-            <input type="submit" value="I'm here!">
-        </form>
-        {% endif %}
+        <div class="tray">
+            <div class = "site">
+                <img class = "logo" src = "/static/img/Cycling.jpg" />
+                <h1 class = "toptext">Check in for the group ride</h1>
+                <h2 class = "toptext">@umcycling.org</h2>
+                <h3 class = "toptext"><a href="/attendance/">attendance history</a></h3>
+                {% if attendance %}
+                <h2 class = "good">Checked in</h2>
+                {% else %}
+                <form action="/submit/" method="post" enctype="multipart/form-data">
+                    {% if logname == "" %}
+                    <label for="logname">uniqname:</label><br>
+                    <input type="text" id="logname" name="logname" required><br>
+                    {% else %}
+                    <label for="logout">Logged in as {{logname}}. Not {{logname}}?</label><br>
+                    <a href="/logout/" id="logout" name="logout">Logout</a><br>
+                    {% endif %}
+                    <input type="submit" value="I'm here!">
+                </form>
+                
+                {% endif %}
+            </div>
+        </div>
     </body>
 </html>

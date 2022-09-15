@@ -1,4 +1,4 @@
-from datetime import datetime
+from dateutil import tz
 import mct_checkin
 import flask
 
@@ -54,9 +54,16 @@ def show_attendance():
         # TODO: datetime data type
         dt = mct_checkin.model.round_nearest(ts)
         
+        from_zone = tz.gettz('UTC')
+        to_zone = tz.gettz('America/Detroit')
+        
+        dt = dt.replace(tzinfo=from_zone)
+        
+        dt = dt.astimezone(to_zone)
+        
         date = dt.strftime("%m/%d")
         
-        ts = dt.strftime("%H:%M %p")
+        ts = dt.strftime("%I:%M %p")
 
         if date not in context["attendance"]:
             context["attendance"][date] = {}

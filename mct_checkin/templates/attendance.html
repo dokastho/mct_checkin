@@ -3,19 +3,26 @@
     <head>
         <title>Michigan Cycling Check In</title>
         <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+        <link rel="icon" type="image/x-icon" href="/static/img/Cycling.jpg">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <h1>Ride History</h1>
-        <p>
-        {% for date, tss in attendance.items() %}
-        <h2>Rides on {{date}}</h2>
-        {% for ts, ppl in tss.items() %}
-        <h3>{{ts}}</h2>
-        {% for p in ppl %}
-        {{p}}, 
-        {% endfor %}
-        {% endfor %}
-        {% endfor %}
-        </p>
+        <div class="tray">
+            <div class = "site">
+                <div class = "toptext"
+                <h1>Ride History</h1>
+                <p>
+                {% for date, tss in attendance.items() %}
+                <h2>Rides on {{date}}</h2>
+                {% for ts, ppl in tss.items() %}
+                <h3>{{ts}}</h2>
+                {% for p in ppl %}
+                {{p}}, 
+                {% endfor %}
+                {% endfor %}
+                {% endfor %}
+                </p>
+            </div>
+        </div>
     </body>
 </html>
