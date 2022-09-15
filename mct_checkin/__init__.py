@@ -1,5 +1,6 @@
 """Package node initializer."""
 import flask
+from threading import Lock
 # app is a single object used by all the code modules in this package
 app = flask.Flask(__name__)  # pylint: disable=invalid-name
 # Read settings from config module (site/config.py)
@@ -12,6 +13,9 @@ app.config.from_object('mct_checkin.config')
 # $ export SITE_SETTINGS=secret_key_config.py
 app.config.from_envvar('SITE_SETTINGS', silent=True)
 
+attendance = {}
+attend_lock = Lock()
 
-from mct_checkin.views import show_index, check_in
+
+from mct_checkin.views import show_index, check_in, logout
 from mct_checkin.model import *
