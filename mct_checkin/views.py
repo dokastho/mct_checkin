@@ -1,3 +1,4 @@
+from curses import longname
 from dateutil import tz
 import mct_checkin
 import flask
@@ -15,12 +16,15 @@ def show_index():
         
         logname = mct_checkin.model.check_session()
         # TODO fix attendance check
-        # attendance = mct_checkin.model.check_attendance(logname)
+        attendance = False
+        if "attendance" in flask.session:
+            attendance = flask.session["attendance"]
+            flask.session["attendance"] = False
         
         if logname:
             context["logname"] = logname
-        # if attendance:
-        #     context["attendance"] = attendance
+        if attendance:
+            context["attendance"] = attendance
 
     return flask.render_template("index.html", **context)
 
@@ -31,7 +35,11 @@ def check_in():
     
     logname = flask.request.form.get('logname')
     
+    if logname is None:
+        logname = mct_checkin.model.check_session()
+    
     flask.session["logname"] = logname
+    flask.session["attendance"] = True
     mct_checkin.insert_attendance(logname)
     
     return flask.redirect("/")

@@ -19,7 +19,7 @@ body {
 }
 
 /* desktop */
-@media only screen and (min-width: 1200px) {
+/* @media only screen and (min-width: 1200px) {
     .site {
         width: 40%;
     }
@@ -31,7 +31,7 @@ body {
         display: flex;
         flex-flow: column;
     }
-}
+} */
 
 a.button {
     -webkit-appearance: button;
@@ -72,6 +72,7 @@ textarea {
     max-width: 100%;
     max-height: 100%;
     margin: auto;
+    display: block;
 }
 
 label {
@@ -87,6 +88,8 @@ input[type=submit] {
     border-radius: 4px;
     cursor: pointer;
     float: right;
+    margin: 10px;
+    display: block;
 }
 
 input[type=submit]:hover {

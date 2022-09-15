@@ -58,9 +58,6 @@ def check_session():
         return False
     return flask.session['logname']
 
-def check_attendance(logname):
-    """Check if logname exists in session."""
-    return logname in mct_checkin.attendance
 
 
 def insert_attendance(logname):
@@ -90,7 +87,6 @@ def get_attendance_history():
 
 import datetime
 
-# TODO debug this
 def round_minutes(dt, direction, resolution):
     new_minute = (dt.minute // resolution + (1 if direction == 'up' else 0)) * resolution
 

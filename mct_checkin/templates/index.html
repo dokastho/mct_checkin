@@ -21,8 +21,8 @@
                     <label for="logname">uniqname:</label><br>
                     <input type="text" id="logname" name="logname" required><br>
                     {% else %}
-                    <label for="logout">Logged in as {{logname}}. Not {{logname}}?</label><br>
-                    <a href="/logout/" id="logout" name="logout">Logout</a><br>
+                    <label for="logout">Logged in as {{logname}}.</label><br>
+                    Not {{logname}}? <a href="/logout/" id="logout" name="logout">Logout</a><br>
                     {% endif %}
                     <input type="submit" value="I'm here!">
                 </form>
