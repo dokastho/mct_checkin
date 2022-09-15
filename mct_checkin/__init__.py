@@ -13,9 +13,10 @@ app.config.from_object('mct_checkin.config')
 # $ export SITE_SETTINGS=secret_key_config.py
 app.config.from_envvar('SITE_SETTINGS', silent=True)
 
-attendance = {}
+attendance = []
 attend_lock = Lock()
 
 
 from mct_checkin.views import show_index, check_in, logout
 from mct_checkin.model import *
+from mct_checkin.gmail import send_mail

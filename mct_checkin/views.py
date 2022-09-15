@@ -1,7 +1,6 @@
 import mct_checkin
 import flask
-
-
+from threading import Thread
 
 
 @mct_checkin.app.route("/")
@@ -29,10 +28,16 @@ def show_index():
 def check_in():
     """view for submitting checkin form."""
     
+    # start the timer to submit if necessary
+    mct_checkin.attend_lock.acquire()
+    if len(mct_checkin.attendance) == 0:
+        t = Thread(mct_checkin.send_attendance)
+        t.start()
+    mct_checkin.attend_lock.release()
+    
     logname = flask.request.form.get('logname')
     
     flask.session["logname"] = logname
-    flask.session["attendance"] = True
     
     return flask.redirect("/")
     
