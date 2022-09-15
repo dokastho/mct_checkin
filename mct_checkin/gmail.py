@@ -12,7 +12,7 @@ def send_mail(attendance: list):
         s.starttls()
 
         # Authentication
-        s.login("mctattendance", "michigan_cycling")
+        s.login("mctattendance@gmail.com", "michigan_cycling")
 
         # message to be sent
         sub = f'Group Ride Attendance {datetime.date.today()}'

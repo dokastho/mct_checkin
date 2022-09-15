@@ -18,9 +18,9 @@ def check_session():
         return False
     return flask.session['logname']
 
-def check_attendance():
+def check_attendance(logname):
     """Check if logname exists in session."""
-    return 'logname' in mct_checkin.attendance
+    return logname in mct_checkin.attendance
 
 
 def send_attendance():
@@ -34,9 +34,9 @@ def send_attendance():
     send_mail(mct_checkin.attendance)
     print("mail sent. clearing attendance...")
     # clear attendance dict
-    mct_checkin.attend_lock.acquire()
-    mct_checkin.attendance = []
-    mct_checkin.attend_lock.release()
+    # mct_checkin.attend_lock.acquire()
+    # mct_checkin.attendance = []
+    # mct_checkin.attend_lock.release()
     print("attendance cleared.")
     
 
@@ -44,5 +44,8 @@ def send_attendance():
 def add_attend(logname: str):
     """add someone to attendance"""
     mct_checkin.attend_lock.acquire()
-    mct_checkin.attendance.append(logname)
+    if logname in mct_checkin.attendance:
+        print(f'{logname} already in attendannce')
+    else:
+        mct_checkin.attendance.append(logname)
     mct_checkin.attend_lock.release()
