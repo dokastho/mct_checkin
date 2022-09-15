@@ -14,3 +14,9 @@ def show_index():
             context["logname"] = logname
 
     return flask.render_template("index.html", **context)
+
+
+@mct_checkin.app.route("/submit/", methods=["POST"])
+def check_in():
+    """view for submitting checkin form."""
+    
