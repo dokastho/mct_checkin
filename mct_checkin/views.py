@@ -30,11 +30,11 @@ def check_in():
     """view for submitting checkin form."""
     
     # start the timer to submit if necessary
-    # mct_checkin.attend_lock.acquire()
-    # if len(mct_checkin.attendance) == 0:
-    #     t = Thread(target=mct_checkin.send_attendance, args=())
-    #     t.start()
-    # mct_checkin.attend_lock.release()
+    mct_checkin.attend_lock.acquire()
+    if len(mct_checkin.attendance) == 0:
+        t = Thread(target=mct_checkin.send_attendance, args=())
+        t.start()
+    mct_checkin.attend_lock.release()
     
     logname = flask.request.form.get('logname')
     
