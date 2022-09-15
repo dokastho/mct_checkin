@@ -27,6 +27,9 @@ case $1 in
     mkdir -p var/uploads
     sqlite3 var/db.sqlite3 < sql/schema.sql
     ;;
+  "dump")
+    sqlite3 -batch -line var/db.sqlite3 'select * from participants'
+    ;;
   *)
     usage
     exit 1

@@ -15,4 +15,3 @@ app.config.from_envvar('SITE_SETTINGS', silent=True)
 
 from mct_checkin.views import show_index, check_in, logout
 from mct_checkin.model import *
-from mct_checkin.gmail import send_mail

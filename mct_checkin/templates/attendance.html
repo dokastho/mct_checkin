@@ -7,10 +7,13 @@
     <body>
         <h1>Ride History</h1>
         <p>
-        {% for ts, ppl in attendance %}
-        <h2>ts</h2>
+        {% for date, tss in attendance.items() %}
+        <h2>Rides on {{date}}</h2>
+        {% for ts, ppl in tss.items() %}
+        <h3>{{ts}}</h2>
         {% for p in ppl %}
-        {{p.uniqname}}, 
+        {{p}}, 
+        {% endfor %}
         {% endfor %}
         {% endfor %}
         </p>

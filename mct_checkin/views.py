@@ -1,7 +1,6 @@
-from logging import LoggerAdapter
+from datetime import datetime
 import mct_checkin
 import flask
-from threading import Thread
 
 
 @mct_checkin.app.route("/")
@@ -15,12 +14,13 @@ def show_index():
         }
         
         logname = mct_checkin.model.check_session()
-        attendance = mct_checkin.model.check_attendance(logname)
+        # TODO fix attendance check
+        # attendance = mct_checkin.model.check_attendance(logname)
         
         if logname:
             context["logname"] = logname
-        if attendance:
-            context["attendance"] = attendance
+        # if attendance:
+        #     context["attendance"] = attendance
 
     return flask.render_template("index.html", **context)
 
@@ -42,20 +42,31 @@ def show_attendance():
 
     attendance = mct_checkin.model.get_attendance_history()
 
-    context = {}
+    context = {
+        "attendance": {}
+    }
 
     # sort by half hours
-    s: set()
-    for ts, uniqname in attendance.values():
+    s = set()
+    for d in attendance:
+        ts = d["ts"]
+        uniqname = d["uniqname"]
         # TODO: datetime data type
-        new_ts = mct_checkin.model.round_nearest(ts)
+        dt = mct_checkin.model.round_nearest(ts)
+        
+        date = dt.strftime("%m/%d")
+        
+        ts = dt.strftime("%H:%M %p")
 
-        if new_ts not in context:
-            context[new_ts] = set()
+        if date not in context["attendance"]:
+            context["attendance"][date] = {}
+            
+        if ts not in context["attendance"][date]:
+            context["attendance"][date][ts] = set()
 
-        context[new_ts].insert(uniqname)
+        context["attendance"][date][ts].add(uniqname)
 
-    flask.render_template("attendance.html", context)
+    return flask.render_template("attendance.html", **context)
     
     
 # @mct_checkin.app.route("/logout/", methods=["POST"])

@@ -73,16 +73,16 @@ def insert_attendance(logname):
         "VALUES(?)",
         (logname,)
     )
-    cur.fetchone()["tagid"]
+    cur.fetchone()
     
 def get_attendance_history():
     """fetch all distinct attendance history."""
 
     database = get_db()
     cur = database.execute(
-        "DISTINCT * "
-        "FROM participants",
-        ()
+        "SELECT * "
+        "FROM participants "
+        "ORDER BY ts"
     )
     attendance = cur.fetchall()
     return attendance
@@ -90,12 +90,17 @@ def get_attendance_history():
 
 import datetime
 
+# TODO debug this
 def round_minutes(dt, direction, resolution):
     new_minute = (dt.minute // resolution + (1 if direction == 'up' else 0)) * resolution
 
-    return dt + datetime.timedelta(minutes=new_minute - dt.minute), new_minute - dt.minute
+    return dt + datetime.timedelta(minutes=new_minute - dt.minute), abs(new_minute - dt.minute)
 
-def round_nearest(dt: datetime.datetime, resolution=30):
+def round_nearest(ts: datetime.datetime, resolution=30):
+    f = '%Y-%m-%d %H:%M:%S'
+    
+    dt = datetime.datetime.strptime(ts, f)
+
     min_delta = 1e6
     new_time = None
     for direction in 'up', 'down':
