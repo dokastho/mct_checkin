@@ -4,17 +4,17 @@ import hashlib
 import os
 import arrow
 from flask import abort, redirect, render_template, request, session
-import authserver
+import mct_checkin
 
 
-@authserver.app.route('/accounts/', methods=['POST'])
+@mct_checkin.app.route('/accounts/', methods=['POST'])
 def accounts():
     """/accounts/?target=URL Immediate redirect. No screenshot."""
-    with authserver.app.app_context():
-        connection = authserver.model.get_db()
+    with mct_checkin.app.app_context():
+        connection = mct_checkin.model.get_db()
 
         # check if target is unspecified or blank
-        target = authserver.model.get_target()
+        target = mct_checkin.model.get_target()
 
         # get operation
         operation = request.form.get('operation')
@@ -69,7 +69,7 @@ def accounts():
 
 def do_login(uname, pword):
     """Login user with username and password."""
-    logname = authserver.model.check_authorization(uname, pword)
+    logname = mct_checkin.model.check_authorization(uname, pword)
     if not logname:
         abort(403)
 
@@ -86,7 +86,7 @@ def do_create(connection, info):
     local = utc.to('US/Pacific')
     timestamp = local.format()
 
-    pp_str = authserver.model.get_uuid(info['file'].filename)
+    pp_str = mct_checkin.model.get_uuid(info['file'].filename)
     pw_str = create_hashed_password(info['password'])
 
     cur = connection.execute(
@@ -100,7 +100,7 @@ def do_create(connection, info):
         abort(409)
 
     # save image
-    path = authserver.app.config["UPLOAD_FOLDER"]/pp_str
+    path = mct_checkin.app.config["UPLOAD_FOLDER"]/pp_str
     info['file'].save(path)
 
     cur = connection.execute(
@@ -136,7 +136,7 @@ def do_delete(connection):
 
     # delete filename
     os.remove(os.path.join(
-        authserver.app.config['UPLOAD_FOLDER'],
+        mct_checkin.app.config['UPLOAD_FOLDER'],
         filename[0]['filename'])
     )
 
@@ -151,7 +151,7 @@ def do_delete(connection):
 
     for post in posts:
         os.remove(os.path.join(
-            authserver.app.config['UPLOAD_FOLDER'],
+            mct_checkin.app.config['UPLOAD_FOLDER'],
             post['filename'])
         )
 
@@ -186,7 +186,7 @@ def do_update_password(connection, info):
     salt = old_pw_hash['password'].split("$")
     if len(salt) > 1:
         salt = salt[1]
-        pw_str = authserver.model.encrypt(salt, info['old'])
+        pw_str = mct_checkin.model.encrypt(salt, info['old'])
     else:
         pw_str = info['old']
 
@@ -214,10 +214,10 @@ def do_update_password(connection, info):
     user = cur.fetchall()
 
 
-@authserver.app.route('/accounts/login/')
+@mct_checkin.app.route('/accounts/login/')
 def login():
     """Render login page."""
-    with authserver.app.app_context():
+    with mct_checkin.app.app_context():
 
         # redirect if a session cookie exists
         if 'logname' not in session:
@@ -228,14 +228,14 @@ def login():
         return redirect('/')
 
 
-@authserver.app.route('/accounts/logout/', methods=['POST'])
+@mct_checkin.app.route('/accounts/logout/', methods=['POST'])
 def logout():
     """Log out user and redirects to login."""
     session.clear()
     return redirect('/accounts/login/')
 
 
-@authserver.app.route('/accounts/create/', methods=['GET'])
+@mct_checkin.app.route('/accounts/create/', methods=['GET'])
 def create():
     """Render create page if not logged in."""
     if 'logname' in session:
@@ -244,7 +244,7 @@ def create():
     return render_template('create.html')
 
 
-@authserver.app.route('/accounts/delete/')
+@mct_checkin.app.route('/accounts/delete/')
 def delete():
     """Render delete page if logged in."""
     if 'logname' not in session:
@@ -256,7 +256,7 @@ def delete():
     return render_template('delete.html', **context)
 
 
-@authserver.app.route('/accounts/password/')
+@mct_checkin.app.route('/accounts/password/')
 def password():
     """Render page to update password if logged in."""
     if 'logname' not in session:

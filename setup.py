@@ -8,13 +8,13 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name='authserver',
+    name='mct_checkin',
     version='0.1.0',
-    packages=['authserver'],
+    packages=['mct_checkin'],
     author="Thomas Dokas",
     author_email="dokastho@umich.edu",
-    url="https://github.com/dokastho/auth_server",
-    description="An Authentication server for web based API's.",
+    url="https://github.com/dokastho/mct_checkin",
+    description="check-in page for michigan cycling group rides.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     include_package_data=True,

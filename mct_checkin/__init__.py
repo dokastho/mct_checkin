@@ -13,4 +13,4 @@ app.config.from_object('authserver.config')
 app.config.from_envvar('SITE_SETTINGS', silent=True)
 
 
-from authserver.views import show_index
+from mct_checkin.views import show_index

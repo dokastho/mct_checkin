@@ -4,7 +4,7 @@ import sqlite3
 import uuid
 import pathlib
 import flask
-import authserver
+import mct_checkin
 
 
 def dict_factory(cursor, row):
@@ -23,7 +23,7 @@ def get_db():
     https://flask.palletsprojects.com/en/1.0.x/appcontext/#storing-data
     """
     if 'sqlite_db' not in flask.g:
-        db_filename = authserver.app.config['DATABASE_FILENAME']
+        db_filename = mct_checkin.app.config['DATABASE_FILENAME']
         flask.g.sqlite_db = sqlite3.connect(str(db_filename))
         flask.g.sqlite_db.row_factory = dict_factory
         # Foreign keys have to be enabled per-connection.  This is an sqlite3
@@ -32,7 +32,7 @@ def get_db():
     return flask.g.sqlite_db
 
 
-@authserver.app.teardown_appcontext
+@mct_checkin.app.teardown_appcontext
 def close_db(error):
     """Close the database at the end of a request.
 
